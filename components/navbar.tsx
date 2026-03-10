@@ -17,9 +17,11 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-6">
+      <Link href="/signin">
         <button className="text-sm font-bold text-[#1d3583] hover:underline uppercase tracking-widest">
           Se connecter
         </button>
+        </Link>
         <Link href="/signup">
         <button className="bg-[#f27a2b] hover:bg-[#d96920] text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all active:scale-95">
           Inscription
