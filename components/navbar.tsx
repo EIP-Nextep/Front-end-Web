@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Catalog from "@/app/catalog/page";
 
 export default function Navbar() {
   return (
@@ -12,7 +13,9 @@ export default function Navbar() {
 
       <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-500 uppercase tracking-widest">
         <Link href="#" className="hover:text-[#1d3583] transition-colors">Comment ça marche</Link>
-        <Link href="#" className="hover:text-[#1d3583] transition-colors">Écoles</Link>
+        <Link href="/catalog" className="hover:text-[#1d3583] transition-colors">
+          Écoles
+        </Link>        
         <Link href="#" className="hover:text-[#1d3583] transition-colors">FAQ</Link>
       </div>
 

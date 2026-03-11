@@ -1,36 +1,39 @@
 "use client";
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Github, Facebook } from "lucide-react";
 
-export default function SignupPage() {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+export default function LoginPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:3001/auth/register', {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: 'STUDENT'
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-      
+      console.log("Données reçues du serveur:", data);
       if (response.ok) {
-        alert("Inscription réussie !");
-        console.log("Succès:", data);
+        localStorage.setItem('authToken', data.access_token);
+        
+        console.log("Connexion réussie");
+        router.push('/quiz');
       } else {
-        alert("Erreur: " + (data.message || "Une erreur est survenue"));
+        alert("Erreur: " + (data.message || "Identifiants invalides"));
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);
-      alert("Impossible de contacter le serveur. Vérifie qu'il tourne sur le port 3001.");
+      alert("Impossible de joindre le serveur.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,21 +47,9 @@ export default function SignupPage() {
              <span className="text-3xl">🦥</span>
           </div>
         </div>
-        <h2 className="text-3xl font-bold text-center mb-8">Sign up</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">Se connecter</h2>
         
-        <form className="space-y-6" onSubmit={handleSignup}>
-          <div className="space-y-2"> 
-            <label className="text-xs font-semibold ml-1">Name</label>
-            <input 
-              type="text"
-              placeholder="your name"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none"
-              required
-            />
-          </div>
-          
+        <form className="space-y-6" onSubmit={handleLogin}>
           <div className="space-y-2">
             <label className="text-xs font-semibold ml-1">Email</label>
             <input 
@@ -66,7 +57,7 @@ export default function SignupPage() {
               placeholder="username@gmail.com"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 focus:outline-none"
               required
             />
           </div>
@@ -75,22 +66,26 @@ export default function SignupPage() {
             <label className="text-xs font-semibold ml-1">Password</label>
             <input 
               type="password" 
-              placeholder="Password"
+              placeholder="********"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none"
+              className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 focus:outline-none"
               required
             />
           </div>
 
-          <button type="submit" className="w-full bg-[#002a54] hover:bg-[#001f3d] py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg">
-            Sign up
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className="w-full bg-[#002a54] hover:bg-[#001f3d] py-4 rounded-xl font-bold transition-all active:scale-95 disabled:opacity-50"
+          >
+            {isLoading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
 
         <div className="my-8 flex items-center gap-4">
           <div className="h-[1px] flex-grow bg-white/20"></div>
-          <span className="text-xs text-slate-300">or</span>
+          <span className="text-xs text-slate-300">ou</span>
           <div className="h-[1px] flex-grow bg-white/20"></div>
         </div>
 
