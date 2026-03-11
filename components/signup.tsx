@@ -23,8 +23,13 @@ export default function SignupPage() {
       const data = await response.json();
       
       if (response.ok) {
+        const userId = data.userId || data.id;
+        await fetch('http://localhost:8080/api/matching/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userId }),
+        });
         alert("Inscription réussie !");
-        console.log("Succès:", data);
       } else {
         alert("Erreur: " + (data.message || "Une erreur est survenue"));
       }
