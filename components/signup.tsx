@@ -1,10 +1,11 @@
 "use client";
 import { useState } from 'react';
 import { Github, Facebook } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-
+  const router = useRouter(); 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -23,9 +24,15 @@ export default function SignupPage() {
       const data = await response.json();
       
       if (response.ok) {
+        const userId = data.userId || data.id;
+        await fetch('http://localhost:8080/api/matching/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userId }),
+        });
         alert("Inscription réussie !");
-        console.log("Succès:", data);
-      } else {
+        router.push('/signin');
+            } else {
         alert("Erreur: " + (data.message || "Une erreur est survenue"));
       }
     } catch (error) {
