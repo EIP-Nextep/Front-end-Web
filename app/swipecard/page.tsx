@@ -1,11 +1,15 @@
 "use client";
 import { useState, useEffect } from 'react';
-import SchoolCard from "@/components/Schools/swipe";
+import { SchoolCard } from "@/components/Schools/swipe";
+import SchoolsSidebar from "@/components/Schools/sidebar";
+
+import { useRouter } from 'next/navigation';
 
 export default function SwipeCardPage() {
   const [metiers, setMetiers] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMetiers = async () => {
@@ -18,8 +22,10 @@ export default function SwipeCardPage() {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
-        if (!res.ok) throw new Error("Erreur API");
-        const data = await res.json();
+        if (!res.ok) {
+          console.error("Erreur API :", res.status, await res.text());
+          throw new Error(`Erreur API ${res.status}`);
+        }        const data = await res.json();
         setMetiers(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Erreur chargement métiers:", error);
@@ -51,24 +57,33 @@ export default function SwipeCardPage() {
   if (loading) return <div className="flex h-screen items-center justify-center font-bold text-blue-900">NexTep chargement...</div>;
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-50 overflow-hidden">
-      <header className="p-8">
-        <h1 className="text-3xl font-bold text-blue-900">Metching recommandée</h1>
-      </header>
-
+    <div className="flex flex-row h-screen w-full bg-slate-50 overflow-hidden">
+      
       <main className="flex-1 flex flex-col items-center justify-center relative">
-        {currentIndex < metiers.length ? (
-          <SchoolCard 
-            school={metiers[currentIndex]} 
-            onSwipe={handleSwipe} 
-          />
-        ) : (
-          <div className="text-center p-8 bg-white rounded-3xl shadow-lg border border-slate-200">
-            <h2 className="text-2xl font-bold text-slate-700">C'est fini pour aujourd'hui !</h2>
-            <p className="text-slate-500 mt-2">Plus de recommandations trouvées.</p>
-          </div>
-        )}
+        <header className="absolute top-8 left-8">
+          <h1 className="text-3xl font-bold text-blue-900">Matching recommandé</h1>
+        </header>
+
+        {currentIndex >= metiers.length ? (
+         <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">C'est fini !</h2>
+        <button 
+      onClick={() => router.push('/myschools')}
+      className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700"
+    >
+      Voir mes écoles recommandées
+    </button>
+  </div>
+) : (
+  <SchoolCard school={metiers[currentIndex]} onSwipe={handleSwipe} />
+)}
       </main>
+
+      <aside className="w-96 border-l border-slate-200 bg-white p-8 overflow-y-auto">
+        <h2 className="text-xl font-bold text-slate-800 mb-6">Écoles en vue</h2>
+        <SchoolsSidebar />
+      </aside>
+      
     </div>
   );
 }
