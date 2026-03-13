@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Github, Facebook } from "lucide-react";
+import { NexTepLogo, NexTepIcon } from "@/components/Logo/nextepLogo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,9 +44,7 @@ export default function LoginPage() {
       
       <div className="relative z-10 w-full max-w-md bg-[#2b4c9b]/80 backdrop-blur-md border border-white/10 p-10 rounded-[2.5rem] shadow-2xl text-white">
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-inner">
-             <span className="text-3xl">🦥</span>
-          </div>
+        <NexTepIcon size={40} /> 
         </div>
         <h2 className="text-3xl font-bold text-center mb-8">Se connecter</h2>
         

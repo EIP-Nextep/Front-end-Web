@@ -1,106 +1,50 @@
 "use client";
-import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
-interface SchoolInfo {
-  id: string;
-  name?: string;
-  image?: string;
-  location?: string;
-}
+export const SchoolCatalogCard = ({ school }: { school: any }) => {
+  const router = useRouter();
 
-interface CourseData {
-  id: string;
-  name?: string;
-  title?: string;
-  description?: string;
-  image?: string;
-  imageUrl?: string;
-  degree?: string;
-  level?: string;
-  price?: string | number;
-  location?: string;
-  provider?: string;
-  duration?: string;
-  category?: string;
-  domains?: string[];
-  schoolId?: string;
-  school_id?: string;
-  _school?: SchoolInfo | null;
-}
-
-export const SchoolCatalogCard = ({ school }: { school: CourseData }) => {
-  const displayName = school.name || school.title || "Sans nom";
-  const displayImage = school.image || school.imageUrl;
-  const displayLocation = school.location || school.provider || null;
-  const displayDegree =
-    school.degree ||
-    school.level ||
-    (school.domains && school.domains.length > 0
-      ? school.domains.join(", ")
-      : null);
-  const displayPrice = school.price != null ? `${school.price}€` : null;
-  const displayDescription =
-    school.description || school.category || school.duration || "";
-  const linkedSchool = school._school;
+  const handleLearnMore = () => {
+    // Redirige vers la page dynamique : app/catalog/[id]/page.tsx
+    router.push(`/catalog/${school.id}`);
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-      {displayImage ? (
-        <img
-          src={displayImage}
-          alt={displayName}
-          className="h-48 w-full object-cover"
+    <div className="group bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+      {/* Image & Badge Location */}
+      <div className="relative h-56 overflow-hidden">
+        <img 
+          src={school.image} 
+          alt={school.name} 
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
         />
-      ) : (
-        <div className="h-48 w-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-          <span className="text-4xl">🎓</span>
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#1d3583] shadow-sm">
+          📍 {school.location}
         </div>
-      )}
-      <div className="p-5">
-        <h3 className="font-bold text-xl text-blue-900 mb-1">{displayName}</h3>
-
-        {linkedSchool && (
-          <div className="flex items-center gap-2 mb-3">
-            {linkedSchool.image && (
-              <img
-                src={linkedSchool.image}
-                alt={linkedSchool.name}
-                className="w-5 h-5 rounded-full object-cover"
-              />
-            )}
-            <span className="text-sm font-medium text-indigo-600">
-              {linkedSchool.name}
-            </span>
-          </div>
-        )}
-
-        {displayDescription && (
-          <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-            {displayDescription}
-          </p>
-        )}
-
-        <div className="space-y-2 mb-6">
-          {(linkedSchool?.location || displayLocation) && (
-            <div className="flex items-center text-xs font-medium text-gray-600">
-              <span className="mr-2">📍</span>{" "}
-              {linkedSchool?.location || displayLocation}
-            </div>
-          )}
-          {displayDegree && (
-            <div className="flex items-center text-xs font-medium text-gray-600">
-              <span className="mr-2">🎓</span> {displayDegree}
-            </div>
-          )}
-          {displayPrice && (
-            <div className="flex items-center text-xs font-medium text-blue-600">
-              <span className="mr-2">💰</span> {displayPrice}
-            </div>
-          )}
+      </div>
+      
+      <div className="p-6">
+        <h3 className="font-bold text-xl text-slate-900 mb-3 group-hover:text-[#1d3583] transition-colors">
+          {school.name}
+        </h3>
+        <p className="text-sm text-slate-500 mb-6 h-12 line-clamp-2 leading-relaxed">
+          {school.description}
+        </p>
+        
+        <div className="flex gap-2 mb-6">
+          <span className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl text-[10px] uppercase font-bold tracking-wider">
+            🎓 {school.degree}
+          </span>
+          <span className="bg-blue-50 text-[#1d3583] px-3 py-1.5 rounded-xl text-[10px] uppercase font-bold tracking-wider">
+            💰 {school.price}€
+          </span>
         </div>
 
-        <button className="w-full py-2.5 bg-blue-900 text-white rounded-xl text-sm font-semibold hover:bg-blue-800 transition-colors">
-          Détails
+        <button 
+          onClick={handleLearnMore}
+          className="w-full py-3.5 bg-[#1d3583] text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-[#162a66] transition-all shadow-lg shadow-blue-900/10 active:scale-[0.98]"
+        >
+          En savoir plus
         </button>
       </div>
     </div>
