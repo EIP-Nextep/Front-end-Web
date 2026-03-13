@@ -188,7 +188,7 @@ export default function SchoolDetails() {
               </div>
               <div className="flex gap-3">
                 <button className="p-3 border rounded-xl text-slate-400 hover:text-red-500"><Heart /></button>
-                <button className="px-8 py-3 bg-[#f27a2b] text-white font-black rounded-xl hover:bg-[#d96920]">Postuler</button>
+                <button className="px-8 py-3 bg-[#f27a2b] text-white font-black rounded-xl hover:bg-[#d96920]">Contacter</button>
               </div>
             </div>
           </div>
